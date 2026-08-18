@@ -19,22 +19,19 @@ const ringOneIcons = [FiCode, FiCpu, FiPenTool];
 const ringTwoIcons = [FiHexagon, FiCommand, FiLayers, FiCode];
 
 function OrbitRing({ radius, duration, direction, icons, iconSize = 40 }) {
-  const ringClass = direction === "cw" ? "orbit-cw" : "orbit-ccw";
-  const iconClass = direction === "cw" ? "orbit-icon-ccw" : "orbit-icon-cw";
-
   return (
     <div
-      className={`orbit-ring ${ringClass}`}
+      className={`orbit-ring orbit-${direction}`}
       style={{ "--radius": `${radius}px`, "--duration": `${duration}s` }}
     >
       {icons.map((Icon, i) => (
         <span
           key={i}
           className="orbit-node"
-          style={{ "--angle": `${(360 / icons.length) * i}deg`, "--radius": `${radius}px` }}
+          style={{ "--angle": `${(360 / icons.length) * i}deg` }}
         >
           <span
-            className={`orbit-icon ${iconClass}`}
+            className={`orbit-icon orbit-icon-counter-${direction}`}
             style={{ "--duration": `${duration}s`, width: iconSize, height: iconSize }}
           >
             <Icon size={iconSize * 0.42} />
@@ -92,8 +89,12 @@ export default function HeroVisual() {
       animate={{ opacity: 1, scale: 1, x: 0 }}
       transition={{ duration: 0.9, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
     >
-      <motion.span className="floating-orb hero-visual-blob-1" style={{ x: blobX, y: blobY }} />
-      <motion.span className="floating-orb hero-visual-blob-2" style={{ x: blobX, y: blobY }} />
+      <motion.span className="hero-visual-blob-wrap" style={{ x: blobX, y: blobY }}>
+        <span className="floating-orb hero-visual-blob-1" />
+      </motion.span>
+      <motion.span className="hero-visual-blob-wrap" style={{ x: blobX, y: blobY }}>
+        <span className="floating-orb hero-visual-blob-2" />
+      </motion.span>
 
       <div className="hero-visual-particles">
         {Array.from({ length: 7 }).map((_, i) => (
@@ -107,24 +108,26 @@ export default function HeroVisual() {
       </motion.div>
 
       <motion.div
-        className="device-mockup glass"
+        className="device-mockup-parallax"
         style={{ x: deviceX, y: deviceY }}
-        initial={{ opacity: 0, y: 30, rotate: -14 }}
-        animate={{ opacity: 1, y: 0, rotate: -6 }}
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
       >
-        <div className="device-mockup-bar">
-          <span />
-          <span />
-          <span />
-        </div>
-        <div className="device-mockup-thumb" />
-        <div className="device-mockup-line" style={{ width: "85%", height: 10 }} />
-        <div className="device-mockup-line" style={{ width: "95%" }} />
-        <div className="device-mockup-line" style={{ width: "60%" }} />
-        <div className="device-mockup-footer">
-          <span className="device-mockup-avatar" />
-          <div className="device-mockup-line" style={{ width: 70, height: 7 }} />
+        <div className="device-mockup glass">
+          <div className="device-mockup-bar">
+            <span />
+            <span />
+            <span />
+          </div>
+          <div className="device-mockup-thumb" />
+          <div className="device-mockup-line" style={{ width: "85%", height: 10 }} />
+          <div className="device-mockup-line" style={{ width: "95%" }} />
+          <div className="device-mockup-line" style={{ width: "60%" }} />
+          <div className="device-mockup-footer">
+            <span className="device-mockup-avatar" />
+            <div className="device-mockup-line" style={{ width: 70, height: 7 }} />
+          </div>
         </div>
       </motion.div>
 

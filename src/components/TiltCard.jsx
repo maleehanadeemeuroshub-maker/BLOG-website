@@ -18,6 +18,10 @@ export default function TiltCard({
   const rotateY = useSpring(useTransform(x, [-0.5, 0.5], [-max, max]), springConfig);
   const glareX = useTransform(x, [-0.5, 0.5], [0, 100]);
   const glareY = useTransform(y, [-0.5, 0.5], [0, 100]);
+  const glareBackground = useTransform(
+    [glareX, glareY],
+    ([gx, gy]) => `radial-gradient(circle at ${gx}% ${gy}%, rgba(255,255,255,0.25), transparent 60%)`
+  );
   const hoverScale = useSpring(1, springConfig);
 
   const handleMouseMove = (e) => {
@@ -58,13 +62,7 @@ export default function TiltCard({
           <motion.div
             aria-hidden="true"
             className="tilt-glare"
-            style={{
-              background: useTransform(
-                [glareX, glareY],
-                ([gx, gy]) =>
-                  `radial-gradient(circle at ${gx}% ${gy}%, rgba(255,255,255,0.25), transparent 60%)`
-              ),
-            }}
+            style={{ background: glareBackground }}
           />
         )}
       </motion.div>

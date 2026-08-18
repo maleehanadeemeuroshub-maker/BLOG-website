@@ -19,6 +19,9 @@ export default function Newsletter() {
 
   return (
     <div className="newsletter">
+      <span className="newsletter-shape newsletter-shape-1" />
+      <span className="newsletter-shape newsletter-shape-2" />
+      <span className="newsletter-shape newsletter-shape-3" />
       <AnimatePresence mode="wait">
         {submitted ? (
           <motion.div

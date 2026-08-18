@@ -8,6 +8,8 @@ import BlogCard from "../components/BlogCard";
 import CategoryCard from "../components/CategoryCard";
 import Newsletter from "../components/Newsletter";
 import PageTransition from "../components/PageTransition";
+import HeroVisual from "../components/HeroVisual";
+import MagneticWrap from "../components/MagneticWrap";
 
 const headline = "Stories, Ideas & Insights for the Modern Web.";
 
@@ -38,7 +40,8 @@ export default function Home() {
       <section className="hero">
         <span className="floating-orb hero-orb-1" />
         <span className="floating-orb hero-orb-2" />
-        <div className="container hero-content">
+        <div className="container hero-inner">
+          <div className="hero-content">
           <motion.span
             className="hero-eyebrow glass"
             style={{ color: "var(--accent)" }}
@@ -84,12 +87,16 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.75, duration: 0.6 }}
           >
-            <Link className="btn btn-primary" to="/blog">
-              Explore Articles <FiArrowRight size={16} />
-            </Link>
-            <Link className="btn btn-outline" to="/categories">
-              Browse Categories
-            </Link>
+            <MagneticWrap>
+              <Link className="btn btn-primary" to="/blog">
+                Explore Articles <FiArrowRight size={16} />
+              </Link>
+            </MagneticWrap>
+            <MagneticWrap strength={10}>
+              <Link className="btn btn-outline" to="/categories">
+                Browse Categories
+              </Link>
+            </MagneticWrap>
           </motion.div>
 
           <motion.div
@@ -111,6 +118,9 @@ export default function Home() {
               <div className="hero-stat-label">Monthly Readers</div>
             </div>
           </motion.div>
+        </div>
+
+        <HeroVisual />
         </div>
       </section>
 
