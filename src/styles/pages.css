@@ -491,6 +491,7 @@
 }
 
 .value-card {
+  position: relative;
   padding: 28px;
   border-radius: var(--radius-lg);
   background: var(--surface);
@@ -597,6 +598,7 @@
 }
 
 .contact-form-card {
+  position: relative;
   padding: 36px;
   border-radius: var(--radius-lg);
   background: var(--surface);

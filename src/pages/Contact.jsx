@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { FiCheckCircle, FiMail, FiMapPin, FiPhone, FiSend } from "react-icons/fi";
 import PageTransition from "../components/PageTransition";
 import AnimatedSection from "../components/AnimatedSection";
+import BorderBeam from "../components/BorderBeam";
 
 const initialForm = { name: "", email: "", subject: "", message: "" };
 
@@ -106,6 +107,7 @@ export default function Contact() {
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
           >
+            <BorderBeam alwaysOn duration={8} opacity={0.35} />
             <AnimatePresence mode="wait">
               {submitted ? (
                 <motion.div

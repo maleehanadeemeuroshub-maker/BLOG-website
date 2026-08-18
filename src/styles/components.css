@@ -316,6 +316,44 @@
   transform: translateY(-1px);
 }
 
+/* ===== Border Beam ===== */
+.border-beam {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: var(--beam-width, 1.5px);
+  background: conic-gradient(
+    from var(--glow-angle),
+    transparent 0%,
+    var(--beam-color, var(--accent)) 10%,
+    transparent 26%
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 4;
+  opacity: var(--beam-opacity, 0.5);
+  animation: borderGlowRotate var(--beam-duration, 7s) linear infinite;
+  animation-play-state: paused;
+  transition: opacity 0.3s ease;
+}
+
+.border-beam-always-on {
+  animation-play-state: running;
+}
+
+.blog-card:hover .border-beam,
+.category-card:hover .border-beam,
+.featured-post:hover .border-beam,
+.value-card:hover .border-beam,
+.newsletter:hover .border-beam,
+.contact-form-card:hover .border-beam {
+  animation-play-state: running;
+  animation-duration: var(--beam-duration-hover, 2.4s);
+  opacity: var(--beam-opacity-hover, 0.95);
+}
+
 /* ===== Tilt Glare ===== */
 .tilt-glare {
   position: absolute;
@@ -621,20 +659,6 @@
   background: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.18), transparent 45%),
               radial-gradient(circle at 80% 80%, rgba(255,255,255,0.12), transparent 45%);
   z-index: -1;
-}
-
-.newsletter::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 2px;
-  background: conic-gradient(from var(--glow-angle), transparent 0%, rgba(255, 255, 255, 0.9), transparent 28%);
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  animation: borderGlowRotate 5s linear infinite;
-  pointer-events: none;
 }
 
 .newsletter-shape {

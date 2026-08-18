@@ -3,6 +3,7 @@ import { authors } from "../data/authors";
 import PageTransition from "../components/PageTransition";
 import TiltCard from "../components/TiltCard";
 import AnimatedSection from "../components/AnimatedSection";
+import BorderBeam from "../components/BorderBeam";
 
 const values = [
   {
@@ -65,6 +66,7 @@ export default function About() {
             >
               <TiltCard max={8} style={{ height: "100%" }}>
                 <div className="value-card">
+                  <BorderBeam />
                   <div className="value-card-icon">{v.icon}</div>
                   <h3 style={{ fontSize: 18, marginBottom: 8 }}>{v.title}</h3>
                   <p style={{ fontSize: 14, color: "var(--text-muted)", lineHeight: 1.6 }}>

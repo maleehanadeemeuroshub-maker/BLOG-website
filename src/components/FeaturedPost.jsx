@@ -4,6 +4,7 @@ import { FiArrowRight, FiClock } from "react-icons/fi";
 import { getCategory } from "../data/categories";
 import { authors } from "../data/authors";
 import TiltCard from "./TiltCard";
+import BorderBeam from "./BorderBeam";
 
 export default function FeaturedPost({ post }) {
   const category = getCategory(post.category);
@@ -18,6 +19,7 @@ export default function FeaturedPost({ post }) {
     >
       <TiltCard max={3.5}>
         <Link to={`/blog/${post.id}`} className="featured-post">
+          <BorderBeam alwaysOn duration={9} opacity={0.4} />
           <div className="featured-post-image">
             <img src={post.image} alt={post.title} />
           </div>

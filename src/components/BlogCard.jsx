@@ -5,6 +5,7 @@ import { getCategory } from "../data/categories";
 import { authors } from "../data/authors";
 import BookmarkButton from "./BookmarkButton";
 import TiltCard from "./TiltCard";
+import BorderBeam from "./BorderBeam";
 
 export default function BlogCard({ post, index = 0 }) {
   const category = getCategory(post.category);
@@ -19,6 +20,7 @@ export default function BlogCard({ post, index = 0 }) {
     >
       <TiltCard max={7} glare style={{ height: "100%" }}>
         <Link to={`/blog/${post.id}`} className="blog-card">
+          <BorderBeam />
           <div className="blog-card-image">
             <img src={post.image} alt={post.title} loading="lazy" />
             {category && (

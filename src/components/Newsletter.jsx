@@ -2,6 +2,7 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { FiCheckCircle, FiMail } from "react-icons/fi";
 import ConstellationGrid from "./ConstellationGrid";
+import BorderBeam from "./BorderBeam";
 
 export default function Newsletter() {
   const [email, setEmail] = useState("");
@@ -21,6 +22,7 @@ export default function Newsletter() {
   return (
     <div className="newsletter">
       <ConstellationGrid density="low" intensity={0.4} forceDark radar={false} />
+      <BorderBeam alwaysOn duration={8} opacity={0.55} color="rgba(255,255,255,0.9)" />
       <span className="newsletter-shape newsletter-shape-1" />
       <span className="newsletter-shape newsletter-shape-2" />
       <span className="newsletter-shape newsletter-shape-3" />

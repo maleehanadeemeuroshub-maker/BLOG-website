@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { FiArrowRight } from "react-icons/fi";
 import { posts } from "../data/posts";
 import TiltCard from "./TiltCard";
+import BorderBeam from "./BorderBeam";
 
 export default function CategoryCard({ category, index = 0 }) {
   const count = posts.filter((p) => p.category === category.id).length;
@@ -16,6 +17,7 @@ export default function CategoryCard({ category, index = 0 }) {
     >
       <TiltCard max={9} style={{ height: "100%" }}>
         <Link to={`/blog?category=${category.id}`} className="category-card">
+          <BorderBeam color={category.gradient?.match(/#[0-9a-fA-F]{3,6}/)?.[0]} />
           <div className="category-card-icon" style={{ background: category.gradient }}>
             {category.icon}
           </div>
