@@ -10,6 +10,7 @@ import Newsletter from "../components/Newsletter";
 import PageTransition from "../components/PageTransition";
 import HeroVisual from "../components/HeroVisual";
 import MagneticWrap from "../components/MagneticWrap";
+import ConstellationGrid from "../components/ConstellationGrid";
 
 const headline = "Stories, Ideas & Insights for the Modern Web.";
 
@@ -38,6 +39,7 @@ export default function Home() {
   return (
     <PageTransition>
       <section className="hero">
+        <ConstellationGrid />
         <span className="floating-orb hero-orb-1" />
         <span className="floating-orb hero-orb-2" />
         <div className="container hero-inner">

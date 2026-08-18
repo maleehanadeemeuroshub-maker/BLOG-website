@@ -124,6 +124,7 @@
 /* ===== Hero Visual Composition ===== */
 .hero-visual {
   position: relative;
+  z-index: 1;
   height: 460px;
   display: flex;
   align-items: center;

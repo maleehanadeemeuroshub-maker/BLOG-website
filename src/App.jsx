@@ -10,7 +10,6 @@ import BlogDetails from "./pages/BlogDetails";
 import Categories from "./pages/Categories";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
-import Constellation from "./pages/Constellation";
 import NotFound from "./pages/NotFound";
 import "./App.css";
 
@@ -26,7 +25,6 @@ function AnimatedRoutes() {
         <Route path="/categories" element={<Categories />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/constellation" element={<Constellation />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </AnimatePresence>
