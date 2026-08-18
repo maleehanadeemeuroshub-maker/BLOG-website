@@ -1,0 +1,13 @@
+@import "./styles/components.css";
+@import "./styles/pages.css";
+
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100svh;
+}
+
+main {
+  flex: 1;
+  width: 100%;
+}
