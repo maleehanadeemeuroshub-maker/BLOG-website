@@ -2,6 +2,7 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { FiCheckCircle, FiMail, FiMapPin, FiPhone, FiSend } from "react-icons/fi";
 import PageTransition from "../components/PageTransition";
+import AnimatedSection from "../components/AnimatedSection";
 
 const initialForm = { name: "", email: "", subject: "", message: "" };
 
@@ -53,7 +54,7 @@ export default function Contact() {
 
   return (
     <PageTransition>
-      <section className="section container">
+      <AnimatedSection className="section" density="low" intensity={0.25} radar={false}>
         <motion.div
           className="about-hero"
           style={{ padding: "20px 0 50px" }}
@@ -197,7 +198,7 @@ export default function Contact() {
             </AnimatePresence>
           </motion.div>
         </div>
-      </section>
+      </AnimatedSection>
     </PageTransition>
   );
 }

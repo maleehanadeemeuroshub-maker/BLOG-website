@@ -9,6 +9,8 @@ import BookmarkButton from "../components/BookmarkButton";
 import ShareButtons from "../components/ShareButtons";
 import BlogCard from "../components/BlogCard";
 import PageTransition from "../components/PageTransition";
+import AnimatedSection from "../components/AnimatedSection";
+import ConstellationGrid from "../components/ConstellationGrid";
 import NotFound from "./NotFound";
 
 export default function BlogDetails() {
@@ -31,6 +33,9 @@ export default function BlogDetails() {
     <PageTransition>
       <article>
         <div className="container">
+          <div className="article-top-visual has-constellation">
+          <ConstellationGrid density="low" intensity={0.22} radar={false} />
+          <div className="article-top-content">
           <motion.button
             className="btn btn-ghost"
             onClick={() => navigate(-1)}
@@ -95,6 +100,8 @@ export default function BlogDetails() {
           >
             <img src={post.image} alt={post.title} />
           </motion.div>
+          </div>
+          </div>
 
           <div className="article-body-wrap">
             <div className="article-toolbar">
@@ -127,21 +134,19 @@ export default function BlogDetails() {
         </div>
 
         {related.length > 0 && (
-          <section className="related-section">
-            <div className="container">
-              <div className="section-head">
-                <div>
-                  <span className="section-eyebrow">Keep reading</span>
-                  <h2>Related Articles</h2>
-                </div>
-              </div>
-              <div className="blog-grid">
-                {related.map((p, i) => (
-                  <BlogCard key={p.id} post={p} index={i} />
-                ))}
+          <AnimatedSection className="related-section" density="low" intensity={0.3}>
+            <div className="section-head">
+              <div>
+                <span className="section-eyebrow">Keep reading</span>
+                <h2>Related Articles</h2>
               </div>
             </div>
-          </section>
+            <div className="blog-grid">
+              {related.map((p, i) => (
+                <BlogCard key={p.id} post={p} index={i} />
+              ))}
+            </div>
+          </AnimatedSection>
         )}
       </article>
     </PageTransition>

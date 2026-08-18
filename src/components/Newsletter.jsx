@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { FiCheckCircle, FiMail } from "react-icons/fi";
+import ConstellationGrid from "./ConstellationGrid";
 
 export default function Newsletter() {
   const [email, setEmail] = useState("");
@@ -19,9 +20,11 @@ export default function Newsletter() {
 
   return (
     <div className="newsletter">
+      <ConstellationGrid density="low" intensity={0.4} forceDark radar={false} />
       <span className="newsletter-shape newsletter-shape-1" />
       <span className="newsletter-shape newsletter-shape-2" />
       <span className="newsletter-shape newsletter-shape-3" />
+      <div className="newsletter-content">
       <AnimatePresence mode="wait">
         {submitted ? (
           <motion.div
@@ -67,6 +70,7 @@ export default function Newsletter() {
           </motion.div>
         )}
       </AnimatePresence>
+      </div>
     </div>
   );
 }

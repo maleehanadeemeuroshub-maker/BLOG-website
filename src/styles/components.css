@@ -664,6 +664,11 @@
   animation: floatSlow 8s ease-in-out infinite;
 }
 
+.newsletter-content {
+  position: relative;
+  z-index: 2;
+}
+
 .newsletter-shape-3 {
   width: 30px;
   height: 30px;

@@ -7,6 +7,7 @@ import BlogCard from "../components/BlogCard";
 import LoadingSkeleton from "../components/LoadingSkeleton";
 import EmptyState from "../components/EmptyState";
 import PageTransition from "../components/PageTransition";
+import AnimatedSection from "../components/AnimatedSection";
 import { useDebounce } from "../hooks/useDebounce";
 
 export default function Blog() {
@@ -53,7 +54,7 @@ export default function Blog() {
 
   return (
     <PageTransition>
-      <section className="section container">
+      <AnimatedSection className="section" density="low" intensity={0.28}>
         <div className="section-head">
           <div>
             <span className="section-eyebrow">
@@ -111,7 +112,7 @@ export default function Blog() {
             ))}
           </div>
         )}
-      </section>
+      </AnimatedSection>
     </PageTransition>
   );
 }

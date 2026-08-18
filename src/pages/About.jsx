@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { authors } from "../data/authors";
 import PageTransition from "../components/PageTransition";
 import TiltCard from "../components/TiltCard";
+import AnimatedSection from "../components/AnimatedSection";
 
 const values = [
   {
@@ -24,7 +25,7 @@ const values = [
 export default function About() {
   return (
     <PageTransition>
-      <section className="section container">
+      <AnimatedSection className="section" density="medium" intensity={0.4} radar>
         <motion.div
           className="about-hero"
           initial={{ opacity: 0, y: 20 }}
@@ -44,9 +45,9 @@ export default function About() {
             practical writing on the modern web — without the fluff.
           </p>
         </motion.div>
-      </section>
+      </AnimatedSection>
 
-      <section className="section container">
+      <AnimatedSection className="section" density="low" intensity={0.3}>
         <div className="section-head">
           <div>
             <span className="section-eyebrow">What we believe</span>
@@ -74,9 +75,9 @@ export default function About() {
             </motion.div>
           ))}
         </div>
-      </section>
+      </AnimatedSection>
 
-      <section className="section container">
+      <AnimatedSection className="section" density="low" intensity={0.3}>
         <div className="section-head">
           <div>
             <span className="section-eyebrow">The people behind it</span>
@@ -99,7 +100,7 @@ export default function About() {
             </motion.div>
           ))}
         </div>
-      </section>
+      </AnimatedSection>
     </PageTransition>
   );
 }

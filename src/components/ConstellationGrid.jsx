@@ -1,16 +1,30 @@
 import { useEffect, useRef } from "react";
 import { useBlog } from "../context/BlogContext";
 
-// Ambient animated node grid used as a background layer (e.g. behind the hero).
-// Scoped to its parent container (not the viewport), transparent so the
-// existing page background/gradients show through, and fully pointer-events
-// free so it never intercepts clicks — mouse interactivity is read from a
-// window-level listener and translated into the container's local space.
-export default function ConstellationGrid() {
+const DENSITY_SPACING = {
+  high: { base: 55, mobile: 74 },
+  medium: { base: 78, mobile: 98 },
+  low: { base: 102, mobile: 124 },
+};
+
+// Ambient animated node grid used as a background layer behind a section.
+// Scoped to its parent container (not the viewport) via ResizeObserver,
+// transparent so the page background shows through, pointer-events free so
+// it never intercepts clicks, and only animates while scrolled into view
+// (IntersectionObserver) so having many instances on one page stays cheap.
+export default function ConstellationGrid({
+  density = "medium",
+  intensity = 0.5,
+  radar = false,
+  glow = true,
+  parallax = true,
+  forceDark = null,
+  className = "",
+}) {
   const wrapperRef = useRef(null);
   const canvasRef = useRef(null);
   const { theme } = useBlog();
-  const isDarkMode = theme === "dark";
+  const isDarkMode = forceDark !== null ? forceDark : theme === "dark";
 
   useEffect(() => {
     const wrapper = wrapperRef.current;
@@ -21,13 +35,17 @@ export default function ConstellationGrid() {
     if (!ctx) return;
 
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const spacingConfig = DENSITY_SPACING[density] || DENSITY_SPACING.medium;
+    const clampedIntensity = Math.min(Math.max(intensity, 0.08), 1);
+    const nearIntensity = Math.max(clampedIntensity, 0.55);
 
-    let animationFrameId;
+    let animationFrameId = null;
+    let isVisible = false;
     let width = 0;
     let height = 0;
     let nodes = [];
+    let parallaxY = 0;
 
-    // Mouse velocity & inertial tracking (in the wrapper's local coordinate space)
     const mouse = {
       x: -1000,
       y: -1000,
@@ -35,12 +53,12 @@ export default function ConstellationGrid() {
       prevY: -1000,
       vx: 0,
       vy: 0,
-      radius: 190,
+      radius: density === "high" ? 190 : 150,
     };
 
     const initNodes = () => {
       nodes = [];
-      const spacing = width < 640 ? 74 : 55; // sparser grid on small screens for perf
+      const spacing = width < 640 ? spacingConfig.mobile : spacingConfig.base;
       const cols = Math.ceil(width / spacing) + 1;
       const rows = Math.ceil(height / spacing) + 1;
 
@@ -68,6 +86,7 @@ export default function ConstellationGrid() {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
       width = rect.width;
       height = rect.height;
+      if (width === 0 || height === 0) return;
       canvas.width = width * dpr;
       canvas.height = height * dpr;
       canvas.style.width = `${width}px`;
@@ -102,7 +121,7 @@ export default function ConstellationGrid() {
       const nodeColor = isDarkMode ? "246, 245, 249" : "22, 21, 29";
       for (let i = 0; i < nodes.length; i++) {
         const n = nodes[i];
-        ctx.fillStyle = `rgba(${nodeColor}, 0.18)`;
+        ctx.fillStyle = `rgba(${nodeColor}, ${0.16 * clampedIntensity})`;
         ctx.beginPath();
         ctx.arc(n.x, n.y, n.radius, 0, Math.PI * 2);
         ctx.fill();
@@ -110,6 +129,11 @@ export default function ConstellationGrid() {
     };
 
     const render = (now) => {
+      if (!isVisible) {
+        animationFrameId = null;
+        return;
+      }
+
       const dt = Math.min((now - lastTime) / 1000, 0.05);
       lastTime = now;
 
@@ -117,16 +141,20 @@ export default function ConstellationGrid() {
       mouse.vy = (mouse.y - mouse.prevY) / (dt * 1000 || 1);
       mouse.prevX = mouse.x;
       mouse.prevY = mouse.y;
-
       const speed = Math.sqrt(mouse.vx * mouse.vx + mouse.vy * mouse.vy);
 
-      // DevNotes palette: violet accent, theme-aware node color
+      if (parallax) {
+        const rect = wrapper.getBoundingClientRect();
+        const centerOffset =
+          (rect.top + rect.height / 2 - window.innerHeight / 2) / window.innerHeight;
+        parallaxY = centerOffset * 26;
+      }
+
       const nodeColor = isDarkMode ? "246, 245, 249" : "22, 21, 29";
       const accentColor = isDarkMode ? "167, 139, 250" : "109, 40, 217";
 
       ctx.clearRect(0, 0, width, height);
 
-      // Node Physics Engine (spring-mass-damping system)
       const SPRING_K = 18;
       const DAMPING = 0.82;
 
@@ -158,8 +186,7 @@ export default function ConstellationGrid() {
         n.y += n.vy * dt * 60;
       }
 
-      // Connections (distance-culled)
-      const MAX_CONN_DIST = 75;
+      const MAX_CONN_DIST = density === "low" ? 90 : 75;
       const MAX_CONN_DIST_SQ = MAX_CONN_DIST * MAX_CONN_DIST;
 
       for (let i = 0; i < nodes.length; i++) {
@@ -172,18 +199,18 @@ export default function ConstellationGrid() {
 
           if (distSq < MAX_CONN_DIST_SQ) {
             const nDist = Math.sqrt(distSq);
-            const alpha = (1 - nDist / MAX_CONN_DIST) * (isDarkMode ? 0.12 : 0.07);
+            const alpha =
+              (1 - nDist / MAX_CONN_DIST) * (isDarkMode ? 0.14 : 0.08) * clampedIntensity;
             ctx.strokeStyle = `rgba(${nodeColor}, ${alpha})`;
             ctx.lineWidth = 0.7;
             ctx.beginPath();
-            ctx.moveTo(n.x, n.y);
-            ctx.lineTo(n2.x, n2.y);
+            ctx.moveTo(n.x, n.y + parallaxY);
+            ctx.lineTo(n2.x, n2.y + parallaxY);
             ctx.stroke();
           }
         }
       }
 
-      // Nodes + interactive highlights
       for (let i = 0; i < nodes.length; i++) {
         const n = nodes[i];
         const dx = mouse.x - n.x;
@@ -191,7 +218,16 @@ export default function ConstellationGrid() {
         const dist = Math.sqrt(dx * dx + dy * dy);
         const isNear = dist < mouse.radius;
 
-        const baseAlpha = isNear ? 0.9 : 0.14 + Math.sin(n.pulse) * 0.06;
+        const baseAlpha = isNear
+          ? nearIntensity
+          : (0.16 + Math.sin(n.pulse) * 0.07) * clampedIntensity;
+
+        if (isNear && glow) {
+          ctx.shadowColor = `rgba(${accentColor}, 0.9)`;
+          ctx.shadowBlur = 10;
+        } else {
+          ctx.shadowBlur = 0;
+        }
 
         ctx.fillStyle = isNear
           ? `rgba(${accentColor}, ${baseAlpha})`
@@ -200,44 +236,70 @@ export default function ConstellationGrid() {
         const currentRadius = isNear ? n.radius * 2.1 : n.radius + Math.sin(n.pulse) * 0.25;
 
         ctx.beginPath();
-        ctx.arc(n.x, n.y, Math.max(0.5, currentRadius), 0, Math.PI * 2);
+        ctx.arc(n.x, n.y + parallaxY, Math.max(0.5, currentRadius), 0, Math.PI * 2);
         ctx.fill();
+        ctx.shadowBlur = 0;
 
-        if (dist < 85) {
+        if (radar && dist < 85) {
           const pulseRing = ((n.pulse * 20) % 28) + 4;
           const ringAlpha = (1 - pulseRing / 32) * 0.35;
 
           ctx.strokeStyle = `rgba(${accentColor}, ${ringAlpha})`;
           ctx.lineWidth = 1;
           ctx.beginPath();
-          ctx.arc(n.x, n.y, pulseRing, 0, Math.PI * 2);
+          ctx.arc(n.x, n.y + parallaxY, pulseRing, 0, Math.PI * 2);
           ctx.stroke();
 
           ctx.font = "8px ui-monospace, SFMono-Regular, Consolas, monospace";
           ctx.fillStyle = `rgba(${accentColor}, 0.75)`;
-          ctx.fillText(n.label, n.x + 10, n.y - 10);
+          ctx.fillText(n.label, n.x + 10, n.y + parallaxY - 10);
         }
       }
 
       animationFrameId = requestAnimationFrame(render);
     };
 
+    const startLoop = () => {
+      if (animationFrameId || reduceMotion) return;
+      lastTime = performance.now();
+      animationFrameId = requestAnimationFrame(render);
+    };
+
+    const stopLoop = () => {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = null;
+      }
+    };
+
+    const intersectionObserver = new IntersectionObserver(
+      ([entry]) => {
+        isVisible = entry.isIntersecting;
+        if (isVisible) {
+          startLoop();
+        } else {
+          stopLoop();
+        }
+      },
+      { rootMargin: "200px 0px" }
+    );
+    intersectionObserver.observe(wrapper);
+
     if (reduceMotion) {
       drawStaticFrame();
-    } else {
-      animationFrameId = requestAnimationFrame(render);
     }
 
     return () => {
-      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+      stopLoop();
       resizeObserver.disconnect();
+      intersectionObserver.disconnect();
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseleave", handleMouseLeave);
     };
-  }, [isDarkMode]);
+  }, [isDarkMode, density, intensity, radar, glow, parallax]);
 
   return (
-    <div ref={wrapperRef} className="constellation-bg" aria-hidden="true">
+    <div ref={wrapperRef} className={`constellation-bg ${className}`} aria-hidden="true">
       <canvas ref={canvasRef} className="constellation-bg-canvas" />
     </div>
   );

@@ -2,11 +2,12 @@ import { motion } from "framer-motion";
 import { categories } from "../data/categories";
 import CategoryCard from "../components/CategoryCard";
 import PageTransition from "../components/PageTransition";
+import AnimatedSection from "../components/AnimatedSection";
 
 export default function Categories() {
   return (
     <PageTransition>
-      <section className="section container">
+      <AnimatedSection className="section" density="medium" intensity={0.4} radar>
         <motion.div
           className="about-hero"
           style={{ padding: "40px 0 56px" }}
@@ -31,7 +32,7 @@ export default function Categories() {
             <CategoryCard key={cat.id} category={cat} index={i} />
           ))}
         </div>
-      </section>
+      </AnimatedSection>
     </PageTransition>
   );
 }
