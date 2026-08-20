@@ -5,7 +5,7 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import BackToTop from "./components/BackToTop";
 import CursorGlow from "./components/CursorGlow";
-import ConstellationGrid from "./components/ConstellationGrid";
+import FluidBackground from "./components/FluidBackground";
 import Home from "./pages/Home";
 import Blog from "./pages/Blog";
 import BlogDetails from "./pages/BlogDetails";
@@ -37,7 +37,7 @@ export default function App() {
   return (
     <BlogProvider>
       <div className="app-shell">
-        <ConstellationGrid density="medium" intensity={0.6} className="constellation-bg-global" />
+        <FluidBackground className="fluid-bg-global" style={{ position: "fixed" }} />
         <CursorGlow />
         <Navbar />
         <main>
