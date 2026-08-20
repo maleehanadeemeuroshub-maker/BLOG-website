@@ -391,15 +391,25 @@
   </section>
 
 <script type="module">
-import Lenis from "lenis";
-
-const lenis = new Lenis({ smoothWheel: true });
-function raf(t) {
-  lenis.raf(t);
+// Lenis is a non-essential progressive enhancement (smooth wheel scroll).
+// Isolated in its own module and try/caught so that if the CDN import ever
+// fails to resolve (offline, blocked, opened via file:// in a browser that
+// won't fetch it), it cannot take the rest of the page down with it — the
+// core script below has no imports and always runs regardless.
+try {
+  const { default: Lenis } = await import("lenis");
+  const lenis = new Lenis({ smoothWheel: true });
+  function raf(t) {
+    lenis.raf(t);
+    requestAnimationFrame(raf);
+  }
   requestAnimationFrame(raf);
+} catch (err) {
+  console.warn("Lenis smooth-scroll unavailable, continuing without it.", err);
 }
-requestAnimationFrame(raf);
+</script>
 
+<script>
 // ---- Word-by-word reveal setup ----
 function wrapWords(el, baseDelay, stagger) {
   const words = el.textContent.trim().split(/\s+/);
