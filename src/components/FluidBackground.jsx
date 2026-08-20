@@ -901,9 +901,9 @@ function fluidSimulation(canvas) {
     }
     if (!virtualColor || Date.now() - lastVColorTime > 120) {
       virtualColor = generateColor();
-      virtualColor.r *= 2.0;
-      virtualColor.g *= 2.0;
-      virtualColor.b *= 2.0;
+      virtualColor.r *= 1.1;
+      virtualColor.g *= 1.1;
+      virtualColor.b *= 1.1;
       lastVColorTime = Date.now();
     }
     const dx = (x - vPrevX) * 9.0;
@@ -1118,9 +1118,9 @@ function fluidSimulation(canvas) {
   function multipleSplats(amount) {
     for (let i = 0; i < amount; i++) {
       const color = generateColor();
-      color.r *= 4.0;
-      color.g *= 4.0;
-      color.b *= 4.0;
+      color.r *= 1.8;
+      color.g *= 1.8;
+      color.b *= 1.8;
       const x = canvas.width * Math.random();
       const y = canvas.height * Math.random();
       const dx = 1000 * (Math.random() - 0.5);
@@ -1226,11 +1226,11 @@ function fluidSimulation(canvas) {
   function generateColor() {
     const isGlitter = Math.random() < 0.4;
     const h = isGlitter ? 0.1 + Math.random() * 0.06 : 0.5 + Math.random() * 0.42;
-    const s = isGlitter ? 0.55 : 0.95;
-    let c = HSVtoRGB(h, s, 1.0);
-    c.r *= 0.92;
-    c.g *= 0.92;
-    c.b *= 0.92;
+    const s = isGlitter ? 0.45 : 0.85;
+    let c = HSVtoRGB(h, s, 0.5);
+    c.r *= 0.6;
+    c.g *= 0.6;
+    c.b *= 0.6;
     return c;
   }
 

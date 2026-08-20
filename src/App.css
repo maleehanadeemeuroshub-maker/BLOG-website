@@ -8,6 +8,23 @@
   min-height: 100svh;
 }
 
+.fluid-bg-global {
+  opacity: 0.8;
+}
+
+.fluid-bg-vignette {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 60% 50% at 50% 38%,
+    rgba(4, 5, 12, 0.6) 0%,
+    rgba(4, 5, 12, 0.32) 40%,
+    rgba(4, 5, 12, 0) 75%
+  );
+}
+
 main {
   flex: 1;
   width: 100%;

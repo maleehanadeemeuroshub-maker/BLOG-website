@@ -38,6 +38,7 @@ export default function App() {
     <BlogProvider>
       <div className="app-shell">
         <FluidBackground className="fluid-bg-global" style={{ position: "fixed" }} />
+        <div className="fluid-bg-vignette" aria-hidden="true" />
         <CursorGlow />
         <Navbar />
         <main>
