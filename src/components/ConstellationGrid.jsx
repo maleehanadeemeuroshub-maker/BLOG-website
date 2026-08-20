@@ -15,9 +15,6 @@ const DENSITY_SPACING = {
 export default function ConstellationGrid({
   density = "medium",
   intensity = 0.5,
-  radar = false,
-  glow = true,
-  parallax = true,
   forceDark = null,
   className = "",
 }) {
@@ -37,44 +34,26 @@ export default function ConstellationGrid({
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const spacingConfig = DENSITY_SPACING[density] || DENSITY_SPACING.medium;
     const clampedIntensity = Math.min(Math.max(intensity, 0.08), 1);
-    const nearIntensity = Math.max(clampedIntensity, 0.55);
 
     let animationFrameId = null;
     let isVisible = false;
     let width = 0;
     let height = 0;
     let nodes = [];
-    let parallaxY = 0;
-
-    const mouse = {
-      x: -1000,
-      y: -1000,
-      prevX: -1000,
-      prevY: -1000,
-      vx: 0,
-      vy: 0,
-      radius: density === "high" ? 190 : 150,
-    };
+    let spacing = spacingConfig.base;
 
     const initNodes = () => {
       nodes = [];
-      const spacing = width < 640 ? spacingConfig.mobile : spacingConfig.base;
+      spacing = width < 640 ? spacingConfig.mobile : spacingConfig.base;
       const cols = Math.ceil(width / spacing) + 1;
       const rows = Math.ceil(height / spacing) + 1;
 
       for (let i = 0; i < cols; i++) {
         for (let j = 0; j < rows; j++) {
-          const x = i * spacing;
-          const y = j * spacing;
           nodes.push({
-            x,
-            y,
-            vx: 0,
-            vy: 0,
-            baseX: x,
-            baseY: y,
+            x: i * spacing,
+            y: j * spacing,
             radius: Math.random() * 1.1 + 1,
-            label: `${(i * 7).toString(16).toUpperCase()}:${(j * 11).toString(16).toUpperCase()}`,
             pulse: Math.random() * Math.PI * 2,
           });
         }
@@ -96,97 +75,21 @@ export default function ConstellationGrid({
       initNodes();
     };
 
-    const handleMouseMove = (e) => {
-      const rect = wrapper.getBoundingClientRect();
-      mouse.x = e.clientX - rect.left;
-      mouse.y = e.clientY - rect.top;
-    };
-
-    const handleMouseLeave = () => {
-      mouse.x = -1000;
-      mouse.y = -1000;
-    };
-
     resize();
 
     const resizeObserver = new ResizeObserver(() => resize());
     resizeObserver.observe(wrapper);
-    window.addEventListener("mousemove", handleMouseMove, { passive: true });
-    window.addEventListener("mouseleave", handleMouseLeave);
 
     let lastTime = performance.now();
 
-    const drawStaticFrame = () => {
-      ctx.clearRect(0, 0, width, height);
+    const drawFrame = (dt) => {
       const nodeColor = isDarkMode ? "246, 245, 249" : "22, 21, 29";
-      for (let i = 0; i < nodes.length; i++) {
-        const n = nodes[i];
-        ctx.fillStyle = `rgba(${nodeColor}, ${0.16 * clampedIntensity})`;
-        ctx.beginPath();
-        ctx.arc(n.x, n.y, n.radius, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    };
-
-    const render = (now) => {
-      if (!isVisible) {
-        animationFrameId = null;
-        return;
-      }
-
-      const dt = Math.min((now - lastTime) / 1000, 0.05);
-      lastTime = now;
-
-      mouse.vx = (mouse.x - mouse.prevX) / (dt * 1000 || 1);
-      mouse.vy = (mouse.y - mouse.prevY) / (dt * 1000 || 1);
-      mouse.prevX = mouse.x;
-      mouse.prevY = mouse.y;
-      const speed = Math.sqrt(mouse.vx * mouse.vx + mouse.vy * mouse.vy);
-
-      if (parallax) {
-        const rect = wrapper.getBoundingClientRect();
-        const centerOffset =
-          (rect.top + rect.height / 2 - window.innerHeight / 2) / window.innerHeight;
-        parallaxY = centerOffset * 26;
-      }
-
-      const nodeColor = isDarkMode ? "246, 245, 249" : "22, 21, 29";
-      const accentColor = isDarkMode ? "167, 139, 250" : "109, 40, 217";
 
       ctx.clearRect(0, 0, width, height);
 
-      const SPRING_K = 18;
-      const DAMPING = 0.82;
-
-      for (let i = 0; i < nodes.length; i++) {
-        const n = nodes[i];
-        n.pulse += dt * 3;
-
-        const dx = mouse.x - n.x;
-        const dy = mouse.y - n.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-
-        if (dist < mouse.radius && dist > 0) {
-          const power = 1 - dist / mouse.radius;
-          const force = power * (1300 + speed * 130);
-          const angle = Math.atan2(dy, dx);
-          n.vx -= Math.cos(angle) * force * dt;
-          n.vy -= Math.sin(angle) * force * dt;
-        }
-
-        const homeDx = n.baseX - n.x;
-        const homeDy = n.baseY - n.y;
-        n.vx += homeDx * SPRING_K * dt;
-        n.vy += homeDy * SPRING_K * dt;
-
-        n.vx *= DAMPING;
-        n.vy *= DAMPING;
-
-        n.x += n.vx * dt * 60;
-        n.y += n.vy * dt * 60;
-      }
-
-      const MAX_CONN_DIST = density === "low" ? 90 : 75;
+      // Threshold covers orthogonal neighbors plus diagonals (spacing * sqrt(2))
+      // so the resting grid actually forms a connected mesh, not isolated dots.
+      const MAX_CONN_DIST = spacing * 1.45;
       const MAX_CONN_DIST_SQ = MAX_CONN_DIST * MAX_CONN_DIST;
 
       for (let i = 0; i < nodes.length; i++) {
@@ -200,12 +103,12 @@ export default function ConstellationGrid({
           if (distSq < MAX_CONN_DIST_SQ) {
             const nDist = Math.sqrt(distSq);
             const alpha =
-              (1 - nDist / MAX_CONN_DIST) * (isDarkMode ? 0.14 : 0.08) * clampedIntensity;
+              (1 - nDist / MAX_CONN_DIST) * (isDarkMode ? 0.2 : 0.12) * clampedIntensity;
             ctx.strokeStyle = `rgba(${nodeColor}, ${alpha})`;
             ctx.lineWidth = 0.7;
             ctx.beginPath();
-            ctx.moveTo(n.x, n.y + parallaxY);
-            ctx.lineTo(n2.x, n2.y + parallaxY);
+            ctx.moveTo(n.x, n.y);
+            ctx.lineTo(n2.x, n2.y);
             ctx.stroke();
           }
         }
@@ -213,48 +116,26 @@ export default function ConstellationGrid({
 
       for (let i = 0; i < nodes.length; i++) {
         const n = nodes[i];
-        const dx = mouse.x - n.x;
-        const dy = mouse.y - n.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        const isNear = dist < mouse.radius;
+        if (!reduceMotion) n.pulse += dt * 3;
+        const alpha = (0.22 + Math.sin(n.pulse) * 0.08) * clampedIntensity;
+        const currentRadius = n.radius + (reduceMotion ? 0 : Math.sin(n.pulse) * 0.25);
 
-        const baseAlpha = isNear
-          ? nearIntensity
-          : (0.16 + Math.sin(n.pulse) * 0.07) * clampedIntensity;
-
-        if (isNear && glow) {
-          ctx.shadowColor = `rgba(${accentColor}, 0.9)`;
-          ctx.shadowBlur = 10;
-        } else {
-          ctx.shadowBlur = 0;
-        }
-
-        ctx.fillStyle = isNear
-          ? `rgba(${accentColor}, ${baseAlpha})`
-          : `rgba(${nodeColor}, ${baseAlpha})`;
-
-        const currentRadius = isNear ? n.radius * 2.1 : n.radius + Math.sin(n.pulse) * 0.25;
-
+        ctx.fillStyle = `rgba(${nodeColor}, ${alpha})`;
         ctx.beginPath();
-        ctx.arc(n.x, n.y + parallaxY, Math.max(0.5, currentRadius), 0, Math.PI * 2);
+        ctx.arc(n.x, n.y, Math.max(0.5, currentRadius), 0, Math.PI * 2);
         ctx.fill();
-        ctx.shadowBlur = 0;
-
-        if (radar && dist < 85) {
-          const pulseRing = ((n.pulse * 20) % 28) + 4;
-          const ringAlpha = (1 - pulseRing / 32) * 0.35;
-
-          ctx.strokeStyle = `rgba(${accentColor}, ${ringAlpha})`;
-          ctx.lineWidth = 1;
-          ctx.beginPath();
-          ctx.arc(n.x, n.y + parallaxY, pulseRing, 0, Math.PI * 2);
-          ctx.stroke();
-
-          ctx.font = "8px ui-monospace, SFMono-Regular, Consolas, monospace";
-          ctx.fillStyle = `rgba(${accentColor}, 0.75)`;
-          ctx.fillText(n.label, n.x + 10, n.y + parallaxY - 10);
-        }
       }
+    };
+
+    const render = (now) => {
+      if (!isVisible) {
+        animationFrameId = null;
+        return;
+      }
+
+      const dt = Math.min((now - lastTime) / 1000, 0.05);
+      lastTime = now;
+      drawFrame(dt);
 
       animationFrameId = requestAnimationFrame(render);
     };
@@ -286,17 +167,15 @@ export default function ConstellationGrid({
     intersectionObserver.observe(wrapper);
 
     if (reduceMotion) {
-      drawStaticFrame();
+      drawFrame(0);
     }
 
     return () => {
       stopLoop();
       resizeObserver.disconnect();
       intersectionObserver.disconnect();
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mouseleave", handleMouseLeave);
     };
-  }, [isDarkMode, density, intensity, radar, glow, parallax]);
+  }, [isDarkMode, density, intensity]);
 
   return (
     <div ref={wrapperRef} className={`constellation-bg ${className}`} aria-hidden="true">

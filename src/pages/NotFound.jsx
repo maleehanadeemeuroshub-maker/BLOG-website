@@ -2,13 +2,11 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { FiArrowLeft } from "react-icons/fi";
 import PageTransition from "../components/PageTransition";
-import ConstellationGrid from "../components/ConstellationGrid";
 
 export default function NotFound() {
   return (
     <PageTransition>
       <div className="not-found has-constellation">
-        <ConstellationGrid density="medium" intensity={0.5} radar glow />
         <span className="floating-orb hero-orb-1" style={{ top: 0, right: "10%" }} />
         <div className="not-found-content">
         <motion.div

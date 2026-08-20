@@ -26,7 +26,7 @@ const values = [
 export default function About() {
   return (
     <PageTransition>
-      <AnimatedSection className="section" density="medium" intensity={0.4} radar>
+      <AnimatedSection className="section">
         <motion.div
           className="about-hero"
           initial={{ opacity: 0, y: 20 }}
@@ -48,7 +48,7 @@ export default function About() {
         </motion.div>
       </AnimatedSection>
 
-      <AnimatedSection className="section" density="low" intensity={0.3}>
+      <AnimatedSection className="section">
         <div className="section-head">
           <div>
             <span className="section-eyebrow">What we believe</span>
@@ -79,7 +79,7 @@ export default function About() {
         </div>
       </AnimatedSection>
 
-      <AnimatedSection className="section" density="low" intensity={0.3}>
+      <AnimatedSection className="section">
         <div className="section-head">
           <div>
             <span className="section-eyebrow">The people behind it</span>

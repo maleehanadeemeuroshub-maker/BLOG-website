@@ -7,7 +7,7 @@ import AnimatedSection from "../components/AnimatedSection";
 export default function Categories() {
   return (
     <PageTransition>
-      <AnimatedSection className="section" density="medium" intensity={0.4} radar>
+      <AnimatedSection className="section">
         <motion.div
           className="about-hero"
           style={{ padding: "40px 0 56px" }}

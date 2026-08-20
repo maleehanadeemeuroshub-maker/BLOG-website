@@ -5,8 +5,9 @@ import { useLocalStorage } from "../hooks/useLocalStorage";
 const BlogContext = createContext(null);
 
 export function BlogProvider({ children }) {
-  // Theme
-  const [theme, setTheme] = useLocalStorage("blog_theme", "light");
+  // Theme — dark is the default/fallback; a stored user choice (from the
+  // toggle) always wins.
+  const [theme, setTheme] = useLocalStorage("blog_theme", "dark");
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);

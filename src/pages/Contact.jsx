@@ -55,7 +55,7 @@ export default function Contact() {
 
   return (
     <PageTransition>
-      <AnimatedSection className="section" density="low" intensity={0.25} radar={false}>
+      <AnimatedSection className="section">
         <motion.div
           className="about-hero"
           style={{ padding: "20px 0 50px" }}

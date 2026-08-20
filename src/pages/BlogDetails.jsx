@@ -10,7 +10,6 @@ import ShareButtons from "../components/ShareButtons";
 import BlogCard from "../components/BlogCard";
 import PageTransition from "../components/PageTransition";
 import AnimatedSection from "../components/AnimatedSection";
-import ConstellationGrid from "../components/ConstellationGrid";
 import NotFound from "./NotFound";
 
 export default function BlogDetails() {
@@ -34,7 +33,6 @@ export default function BlogDetails() {
       <article>
         <div className="container">
           <div className="article-top-visual has-constellation">
-          <ConstellationGrid density="low" intensity={0.22} radar={false} />
           <div className="article-top-content">
           <motion.button
             className="btn btn-ghost"
@@ -134,7 +132,7 @@ export default function BlogDetails() {
         </div>
 
         {related.length > 0 && (
-          <AnimatedSection className="related-section" density="low" intensity={0.3}>
+          <AnimatedSection className="related-section">
             <div className="section-head">
               <div>
                 <span className="section-eyebrow">Keep reading</span>

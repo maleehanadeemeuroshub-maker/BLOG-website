@@ -54,7 +54,7 @@ export default function Blog() {
 
   return (
     <PageTransition>
-      <AnimatedSection className="section" density="low" intensity={0.28}>
+      <AnimatedSection className="section">
         <div className="section-head">
           <div>
             <span className="section-eyebrow">

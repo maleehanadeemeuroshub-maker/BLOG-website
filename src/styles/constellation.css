@@ -18,3 +18,41 @@
   position: relative;
   overflow: hidden;
 }
+
+.constellation-bg-global {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+
+.app-shell > main,
+.app-shell > .footer {
+  position: relative;
+  z-index: 1;
+}
+
+.cursor-glow {
+  position: fixed;
+  top: -9px;
+  left: -9px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  background: radial-gradient(circle, var(--accent) 0%, transparent 72%);
+  opacity: 0.32;
+  filter: blur(1px);
+  mix-blend-mode: normal;
+  will-change: transform;
+}
+
+.cursor-glow-active {
+  opacity: 0.55;
+}
+
+@media (max-width: 900px), (hover: none), (pointer: coarse) {
+  .cursor-glow {
+    display: none;
+  }
+}

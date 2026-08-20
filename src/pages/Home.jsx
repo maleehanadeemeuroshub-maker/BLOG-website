@@ -10,7 +10,6 @@ import Newsletter from "../components/Newsletter";
 import PageTransition from "../components/PageTransition";
 import HeroVisual from "../components/HeroVisual";
 import MagneticWrap from "../components/MagneticWrap";
-import ConstellationGrid from "../components/ConstellationGrid";
 import AnimatedSection from "../components/AnimatedSection";
 
 const headline = "Stories, Ideas & Insights for the Modern Web.";
@@ -40,7 +39,6 @@ export default function Home() {
   return (
     <PageTransition>
       <section className="hero">
-        <ConstellationGrid density="high" intensity={1} radar />
         <span className="floating-orb hero-orb-1" />
         <span className="floating-orb hero-orb-2" />
         <div className="container hero-inner">
@@ -128,13 +126,13 @@ export default function Home() {
       </section>
 
       {featured && (
-        <AnimatedSection className="section" density="low" intensity={0.3}>
+        <AnimatedSection className="section">
           <span className="section-eyebrow">Editor&apos;s Pick</span>
           <FeaturedPost post={featured} />
         </AnimatedSection>
       )}
 
-      <AnimatedSection className="section" density="low" intensity={0.3}>
+      <AnimatedSection className="section">
         <div className="section-head">
           <div>
             <span className="section-eyebrow">Fresh off the press</span>
@@ -151,7 +149,7 @@ export default function Home() {
         </div>
       </AnimatedSection>
 
-      <AnimatedSection className="section" density="low" intensity={0.3}>
+      <AnimatedSection className="section">
         <div className="section-head">
           <div>
             <span className="section-eyebrow">Reader favorites</span>
@@ -165,7 +163,7 @@ export default function Home() {
         </div>
       </AnimatedSection>
 
-      <AnimatedSection className="section" density="medium" intensity={0.4}>
+      <AnimatedSection className="section">
         <div className="section-head">
           <div>
             <span className="section-eyebrow">Explore by topic</span>
